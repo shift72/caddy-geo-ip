@@ -31,7 +31,7 @@ var (
 )
 
 func init() {
-	caddy.RegisterModule(&GeoIP{})
+	caddy.RegisterModule(GeoIP{})
 	httpcaddyfile.RegisterHandlerDirective("geo_ip", parseCaddyfile)
 }
 
@@ -126,7 +126,7 @@ func parseCaddyfile(h httpcaddyfile.Helper) (caddyhttp.MiddlewareHandler, error)
 	return &m, err
 }
 
-func (*GeoIP) CaddyModule() caddy.ModuleInfo {
+func (GeoIP) CaddyModule() caddy.ModuleInfo {
 	return caddy.ModuleInfo{
 		ID:  "http.handlers.geoip",
 		New: func() caddy.Module { return new(GeoIP) },
