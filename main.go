@@ -25,7 +25,6 @@ import (
 var (
 	_ caddy.Module          = (*GeoIP)(nil)
 	_ caddy.Provisioner     = (*GeoIP)(nil)
-	_ caddy.Provisioner     = (*GeoIP)(nil)
 	_ caddy.CleanerUpper    = (*GeoIP)(nil)
 	_ caddyfile.Unmarshaler = (*GeoIP)(nil)
 )
@@ -35,7 +34,7 @@ func init() {
 	httpcaddyfile.RegisterHandlerDirective("geo_ip", parseCaddyfile)
 }
 
-// Allows to filter requests based on source IP country.
+// Allows looking up the Country Code of an IP address based on the Maxmind database
 type GeoIP struct {
 
 	// The AccountID of the maxmind account
