@@ -22,7 +22,7 @@ localhost:8080 {
   }
 
   respond / 200 {
-    body "Hello from {geoip_country_code}"
+    body "Hello from {geoip.country_code}"
   }
 }
 

@@ -30,7 +30,7 @@ func TestIPV4Json(t *testing.T) {
 									{
 										"handler": "static_response",
 										"status_code": 200,
-										"body": "Hello from {geoip_country_code}"
+										"body": "Hello from {geoip.country_code}"
 									}
 								]
 							}
@@ -75,7 +75,7 @@ func TestIPV6Json(t *testing.T) {
 									{
 										"handler": "static_response",
 										"status_code": 200,
-										"body": "Hello from {geoip_country_code}"
+										"body": "Hello from {geoip.country_code}"
 									}
 								]
 							}
@@ -120,7 +120,7 @@ func TestIPV4Caddyfile(t *testing.T) {
 			}
 
 			respond / 200 {
-				body "Hello from {geoip_country_code}"
+				body "Hello from {geoip.country_code}"
 			}
 		}
 	`

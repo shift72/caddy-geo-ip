@@ -34,7 +34,7 @@ func init() {
 	httpcaddyfile.RegisterHandlerDirective("geo_ip", parseCaddyfile)
 }
 
-// Allows looking up the Country Code of an IP address based on the Maxmind database
+// Allows finding the Country Code of an IP address using the Maxmind database
 type GeoIP struct {
 
 	// The AccountID of the maxmind account
@@ -302,14 +302,12 @@ func (m *GeoIP) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp
 	}
 
 	repl := r.Context().Value(caddy.ReplacerCtxKey).(*caddy.Replacer)
-	repl.Set("geoip_country_code", record.Country.ISOCode)
+	repl.Set("geoip.country_code", record.Country.ISOCode)
 
 	m.logger.Info(
-		"Detected MaxMind data",
+		"found maxmind data",
 		zap.String("ip", r.RemoteAddr),
 		zap.String("country", record.Country.ISOCode),
-		zap.String("subdivisions", record.Subdivisions.CommaSeparatedISOCodes()),
-		zap.Int("metro_code", record.Location.MetroCode),
 	)
 
 	return next.ServeHTTP(w, r)
