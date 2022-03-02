@@ -136,6 +136,41 @@ func TestIPV4Caddyfile(t *testing.T) {
 	tester.AssertResponse(req, 200, "Hello from NZ")
 }
 
+func TestDatabaseDoesNotExist(t *testing.T) {
+	tester := caddytest.NewTester(t)
+
+	cfg := `
+		{
+			http_port     8080
+			https_port    8443
+			order geo_ip first
+		}
+
+		localhost:8080 {
+
+			geo_ip {
+				reload_frequency 	1d
+			  db_path 					GeoLite2-Country2.mmdb
+				trust_header 			X-Real-IP
+			}
+
+			respond / 200 {
+				body "Hello from --"
+			}
+		}
+	`
+
+	tester.InitServer(cfg, "caddyfile")
+
+	req, err := http.NewRequest("GET", "http://localhost:8080", nil)
+	if err != nil {
+		t.Fatalf("unable to create request %s", err)
+	}
+
+	req.Header.Add("X-Real-IP", "202.36.75.151:3000")
+	tester.AssertResponse(req, 200, "Hello from --")
+}
+
 func xTestDownload(t *testing.T) {
 
 	logger := zap.NewExample()

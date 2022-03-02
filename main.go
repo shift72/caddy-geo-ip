@@ -1,9 +1,11 @@
 package caddy_geoip
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -252,6 +254,11 @@ func (m *GeoIP) reloadDatabase() error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
+	if _, err := os.Stat(m.DbPath); errors.Is(err, os.ErrNotExist) {
+		m.logger.Warn("database does not exist", zap.String("dbpath", m.DbPath))
+		return nil
+	}
+
 	newInstance, err := maxminddb.Open(m.DbPath)
 	if err != nil {
 		return err
@@ -291,6 +298,15 @@ func (m *GeoIP) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp
 	addr := net.ParseIP(remoteIp)
 	if addr == nil {
 		m.logger.Warn("cannot parse IP address", zap.String("address", r.RemoteAddr))
+		return next.ServeHTTP(w, r)
+	}
+
+	if m.dbInst == nil {
+		m.logger.Warn("no database loaded, skipping geoip lookup")
+
+		repl := r.Context().Value(caddy.ReplacerCtxKey).(*caddy.Replacer)
+		repl.Set("geoip.country_code", "--")
+
 		return next.ServeHTTP(w, r)
 	}
 
