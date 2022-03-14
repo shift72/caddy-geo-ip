@@ -30,12 +30,14 @@ localhost:8080 {
 
 ## Configuration
 
+`account` - this is the Maxmind Account, required for all download operations. Can be supplied as an ENV Variable `GEO_ACCOUNT_ID`.
+
 `db_path` - is the path to load the database from. The filename is used to determine the edition of the file to download
      Valid values tested with are GeoIP2-Country | GeoLite2-Country
 
 `trust_header` - this is used to determine the header to load the users ip address from, if empty it will use the requests `RemoteAddr`
 
-`api_key` - this is a Maxmind API Key. If blank no attempt will be made to download the database.
+`api_key` - this is a Maxmind API Key. If blank no attempt will be made to download the database.  Can be supplied as an ENV Variable `GEO_API_KEY`.
 
 `download_frequency` - this is how often to download the database from the Maxmind Server (requires an APIKey)
 

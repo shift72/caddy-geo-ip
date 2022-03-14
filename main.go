@@ -139,6 +139,19 @@ func (m *GeoIP) Provision(ctx caddy.Context) error {
 
 	m.done = make(chan bool, 1)
 
+	// load environment variables
+	if os.Getenv("GEOIP_ACCOUNT_ID") != "" {
+		i, err := strconv.Atoi(os.Getenv("GEOIP_ACCOUNT_ID"))
+		if err != nil {
+			return fmt.Errorf("reading account id: %w", err)
+		}
+		m.AccountID = i
+	}
+
+	if os.Getenv("GEOIP_API_KEY") != "" {
+		m.APIKey = os.Getenv("GEOIP_API_KEY")
+	}
+
 	// start the reload or the refresh timer
 	if m.AccountID > 0 && m.APIKey != "" && m.DownloadFrequency > 0 {
 
