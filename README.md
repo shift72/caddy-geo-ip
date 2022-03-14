@@ -45,6 +45,12 @@ localhost:8080 {
 to specify the `reload_frequency`
 
 
+## Release Process
+
+```
+git tag v0.4.0
+git push origin v0.4.0
+```
 
 ## Builds on the good work by
 
