@@ -1,5 +1,11 @@
 # Change log
 
+# 0.5.0
+Refactored to support reloading without triggering multiple tickers
+Add `override_country_code` to support development
+
+# 0.4.0
+Add env vars for `GEOIP_ACCOUNT_ID` and `GEOIP_API_KEY`
 
 # 0.3.0
 Support skipping GeoIP look up if the database has not been loaded. This helps
