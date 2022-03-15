@@ -1,5 +1,8 @@
 # Change log
 
+# 0.6.0
+Support `override_country_code` if there is no database loaded
+
 # 0.5.0
 Refactored to support reloading without triggering multiple tickers
 Add `override_country_code` to support development

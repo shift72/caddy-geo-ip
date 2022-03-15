@@ -131,6 +131,11 @@ func (m *GeoIP) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp
 		repl := r.Context().Value(caddy.ReplacerCtxKey).(*caddy.Replacer)
 		repl.Set("geoip.country_code", "--")
 
+		// local development - force the country code to a known value
+		if m.OverrideCountryCode != "" {
+			repl.Set("geoip.country_code", m.OverrideCountryCode)
+		}
+
 		return next.ServeHTTP(w, r)
 	}
 
