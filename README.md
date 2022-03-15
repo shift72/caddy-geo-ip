@@ -44,6 +44,7 @@ localhost:8080 {
 `reload_frequency` - this is how often to check for updated versions of the database on disk. This can be used when an external process is responsible for downloading the database. If the database is being managed via the `api_key` and `download_frequency` then there is no need
 to specify the `reload_frequency`
 
+`override_country_code` - this setting allows for the country code to be configured for local development. It will attempt to use the database if there is one, and use the value if no record could be found.
 
 ## Release Process
 

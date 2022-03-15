@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/caddyserver/caddy/v2/caddytest"
-	"go.uber.org/zap"
 )
 
 func TestIPV4Json(t *testing.T) {
@@ -136,6 +135,41 @@ func TestIPV4Caddyfile(t *testing.T) {
 	tester.AssertResponse(req, 200, "Hello from NZ")
 }
 
+func TestIPV4CaddyfileOverride(t *testing.T) {
+	tester := caddytest.NewTester(t)
+
+	cfg := `
+		{
+			http_port     8080
+			https_port    8443
+			order geo_ip first
+		}
+
+		localhost:8080 {
+
+			geo_ip {
+				account_id 				1000
+				reload_frequency 	1d
+			  db_path 					GeoLite2-Country.mmdb
+				override_country_code AU
+			}
+
+			respond / 200 {
+				body "Hello from {geoip.country_code}"
+			}
+		}
+	`
+
+	tester.InitServer(cfg, "caddyfile")
+
+	req, err := http.NewRequest("GET", "http://localhost:8080", nil)
+	if err != nil {
+		t.Fatalf("unable to create request %s", err)
+	}
+
+	tester.AssertResponse(req, 200, "Hello from AU")
+}
+
 func TestDatabaseDoesNotExist(t *testing.T) {
 	tester := caddytest.NewTester(t)
 
@@ -169,22 +203,4 @@ func TestDatabaseDoesNotExist(t *testing.T) {
 
 	req.Header.Add("X-Real-IP", "202.36.75.151:3000")
 	tester.AssertResponse(req, 200, "Hello from --")
-}
-
-func xTestDownload(t *testing.T) {
-
-	logger := zap.NewExample()
-
-	g := GeoIP{
-		logger:    logger,
-		AccountID: 0,
-		APIKey:    "",
-		DbPath:    "GeoLite2-Country.mmdb",
-	}
-
-	err := g.downloadDatabase()
-
-	if err != nil {
-		t.Fail()
-	}
 }
