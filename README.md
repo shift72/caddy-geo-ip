@@ -30,7 +30,7 @@ localhost:8080 {
 
 ## Configuration
 
-`account` - this is the Maxmind Account, required for all download operations. Can be supplied as an ENV Variable `GEO_ACCOUNT_ID`.
+`account_id` - this is the Maxmind Account, required for all download operations. Can be supplied as an ENV Variable `GEO_ACCOUNT_ID`.
 
 `db_path` - is the path to load the database from. The filename is used to determine the edition of the file to download
      Valid values tested with are GeoIP2-Country | GeoLite2-Country
