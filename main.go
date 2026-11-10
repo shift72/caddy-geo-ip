@@ -125,7 +125,11 @@ func (m *GeoIP) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp
 		return next.ServeHTTP(w, r)
 	}
 
+	// Keep the reader mapped until this lookup finishes. Release the lock before
+	// calling the next handler, which may serve a long-lived response.
+	m.state.mu.RLock()
 	if m.state.dbInst == nil {
+		m.state.mu.RUnlock()
 		m.logger.Warn("no database loaded, skipping geoip lookup")
 
 		repl := r.Context().Value(caddy.ReplacerCtxKey).(*caddy.Replacer)
@@ -136,6 +140,7 @@ func (m *GeoIP) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp
 
 	var record Record
 	err = m.state.dbInst.Lookup(addr, &record)
+	m.state.mu.RUnlock()
 	if err != nil {
 		m.logger.Warn("cannot lookup IP address", zap.String("address", r.RemoteAddr), zap.Error(err))
 		return err
