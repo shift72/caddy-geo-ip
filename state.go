@@ -16,7 +16,7 @@ import (
 )
 
 type state struct {
-	mu     sync.Mutex
+	mu     sync.RWMutex
 	dbInst *maxminddb.Reader
 	done   chan bool
 	dbPath string
@@ -160,6 +160,8 @@ func (state *state) downloadDatabase() error {
 }
 
 func (state *state) logStatus() {
+	state.mu.RLock()
+	defer state.mu.RUnlock()
 	if state.dbInst == nil {
 		state.logger.Info("no geo database available")
 	} else {
